@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brute Force Detector</title>
+</head>
+
+<body style="background:#111; color:white; font-family:Arial; padding:20px;">
+
+    <h2>🔐 Brute Force Detection System</h2>
+
+    <!-- ================= INPUT FORM ================= -->
+    <form method="POST" enctype="multipart/form-data">
+
+        <!-- FILE UPLOAD -->
+        <h3>📁 Upload File (CSV / LOG / TXT / EVTX)</h3>
+
+        <input type="file" name="file" accept=".csv,.txt,.log,.evtx">
+
+        <p style="font-size:12px;color:gray;">
+            Supported formats: .csv, .txt, .log, .evtx (Windows Event Logs)
+        </p>
+
+        <hr style="margin:20px 0;">
+
+        <!-- TEXT INPUT -->
+        <h3>✍️ Or Paste Logs</h3>
+        <textarea name="text_input" rows="12" cols="100"
+        placeholder="Paste logs here..."></textarea>
+
+        <br><br>
+
+        <!-- ANALYZE BUTTON -->
+        <button type="submit" style="
+            padding:10px 20px;
+            background:#00ff9f;
+            border:none;
+            cursor:pointer;
+            font-weight:bold;
+        ">
+            Analyze
+        </button>
+    </form>
+
+    <!-- ================= RESULT ================= -->
+    {% if prediction %}
+        <h2 style="margin-top:30px;">{{ prediction }}</h2>
+        <h3>Confidence: {{ confidence }}%</h3>
+    {% endif %}
+
+    <!-- ================= ATTACK LOGS ================= -->
+    {% if attack_logs is not none and attack_logs|length > 0 %}
+        <h3 style="margin-top:30px;">🚨 Attack Logs (with Time)</h3>
+
+        <div style="
+            background:black;
+            color:#00ff9f;
+            padding:15px;
+            height:300px;
+            overflow-y:scroll;
+            font-family:monospace;
+            border-radius:8px;
+            border:1px solid #00ff9f;
+        ">
+            {% for log in attack_logs %}
+                {{ log }}<br>
+            {% endfor %}
+        </div>
+
+        <!-- ================= DOWNLOAD BUTTON ================= -->
+        <a href="/download">
+            <button style="
+                margin-top:15px;
+                padding:10px 20px;
+                background:#ff4d4d;
+                border:none;
+                cursor:pointer;
+                font-weight:bold;
+                color:white;
+            ">
+                ⬇️ Download as CSV
+            </button>
+        </a>
+
+    {% endif %}
+
+    <!-- ================= NO RESULT ================= -->
+    {% if prediction and (attack_logs is none or attack_logs|length == 0) %}
+        <p style="color:orange; margin-top:20px;">
+            No brute force logs detected.
+        </p>
+    {% endif %}
+
+</body>
+</html>
